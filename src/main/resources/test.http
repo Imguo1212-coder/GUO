@@ -1,0 +1,25 @@
+### 插入部门
+POST http://localhost:8080/departments
+Content-Type: application/json
+
+{
+  "name": "人事部",
+  "description": "负责招聘"
+}
+
+### 插入用户
+POST http://localhost:8080/users
+Content-Type: application/json
+
+{
+  "name": "王五",
+  "age": 25,
+  "email": "wangwu@test.com",
+  "departmentId": 1
+}
+
+### 查询全部部门
+GET http://localhost:8080/departments
+
+### 查询全部用户
+GET http://localhost:8080/users
