@@ -1,0 +1,20 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: dept-service
+  datasource:
+    url: jdbc:mysql://localhost:3306/guo?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+
+mybatis-plus:
+  type-aliases-package: com.test.guo.dept.entity
+  configuration:
+    map-underscore-to-camel-case: true

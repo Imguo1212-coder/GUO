@@ -1,0 +1,25 @@
+server:
+  port: 8088
+
+spring:
+  application:
+    name: guo-gateway
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+    gateway:
+      server:
+        webflux:
+          discovery:
+            locator:
+              enabled: true
+          routes:
+            - id: user-service-route
+              uri: lb://user-service
+              predicates:
+                - Path=/users/**
+            - id: dept-service-route
+              uri: lb://dept-service
+              predicates:
+                - Path=/departments/**
