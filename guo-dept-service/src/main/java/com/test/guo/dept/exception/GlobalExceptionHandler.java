@@ -1,4 +1,4 @@
-package com.test.guo.user.exception;
+package com.test.guo.dept.exception;
 
 import com.test.guo.common.exception.BusinessException;
 import com.test.guo.common.exception.ErrorCode;

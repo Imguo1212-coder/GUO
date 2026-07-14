@@ -18,6 +18,7 @@
     <name>guo-parent</name>
 
     <modules>
+        <module>guo-common</module>
         <module>guo-user-service</module>
         <module>guo-dept-service</module>
         <module>guo-gateway</module>

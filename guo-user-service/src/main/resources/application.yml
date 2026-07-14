@@ -5,14 +5,29 @@ spring:
   application:
     name: user-service
   datasource:
-    url: jdbc:mysql://localhost:3306/guo_user?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
-    username: root
-    password: 123456
+    url: ${USER_DB_URL:jdbc:mysql://localhost:3306/guo_user?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai}
+    username: ${USER_DB_USERNAME:root}
+    password: ${USER_DB_PASSWORD:123456}
     driver-class-name: com.mysql.cj.jdbc.Driver
   cloud:
     nacos:
       discovery:
-        server-addr: 127.0.0.1:8848
+        server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+      config:
+        server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+        file-extension: yaml
+        openfeign:
+          client:
+            config:
+              default:
+                connectTimeout: 3000
+                readTimeout: 5000
+              dept-service:
+                connectTimeout: 2000
+                readTimeout: 3000
+  config:
+     import: optional:nacos:user-service.yaml
+
 
 mybatis-plus:
   type-aliases-package: com.test.guo.user.entity

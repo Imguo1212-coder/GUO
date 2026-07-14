@@ -5,14 +5,20 @@ spring:
   application:
     name: dept-service
   datasource:
-    url: jdbc:mysql://localhost:3306/guo_dept?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
-    username: root
-    password: 123456
+    url: ${DEPT_DB_URL:jdbc:mysql://localhost:3306/guo_dept?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai}
+    username: ${DEPT_DB_USERNAME:root}
+    password: ${DEPT_DB_PASSWORD:123456}
     driver-class-name: com.mysql.cj.jdbc.Driver
   cloud:
     nacos:
       discovery:
-        server-addr: 127.0.0.1:8848
+        server-addr:  ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+      config:
+        server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+        file-extension: yaml
+        group: DEFAULT_GROUP
+  config:
+    import: optional:nacos:dept-service.yaml
 
 mybatis-plus:
   type-aliases-package: com.test.guo.dept.entity
