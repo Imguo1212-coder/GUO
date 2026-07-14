@@ -11,16 +11,21 @@ import com.test.guo.dept.mapper.DepartmentMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class DepartmentService {
 
     private final DepartmentMapper departmentMapper;
+    private final DepartmentCacheService departmentCacheService;
 
-    public DepartmentService(DepartmentMapper departmentMapper) {
+    public DepartmentService(DepartmentMapper departmentMapper,
+                             DepartmentCacheService departmentCacheService) {
         this.departmentMapper = departmentMapper;
+        this.departmentCacheService = departmentCacheService;
     }
 
     public Department create(DepartmentCreateRequest request) {
@@ -36,6 +41,7 @@ public class DepartmentService {
                     "部门新增失败"
             );
         }
+        departmentCacheService.put(department);
         return department;
     }
 
@@ -47,6 +53,7 @@ public class DepartmentService {
                     "部门不存在，删除失败"
             );
         }
+        departmentCacheService.delete(id);
     }
 
     public void update(Long id, DepartmentUpdateRequest request) {
@@ -62,13 +69,20 @@ public class DepartmentService {
                     "部门不存在，修改失败"
             );
         }
+        departmentCacheService.delete(id);
     }
 
     public Department getById(Long id) {
+        Department cached = departmentCacheService.get(id);
+        if (cached != null) {
+            return cached;
+        }
+
         Department department = departmentMapper.selectById(id);
         if (department == null) {
             throw new BusinessException(ErrorCode.DEPARTMENT_NOT_FOUND);
         }
+        departmentCacheService.put(department);
         return department;
     }
 
@@ -76,11 +90,32 @@ public class DepartmentService {
         Page<Department> departmentPage = new Page<>(page, size);
         return departmentMapper.selectPage(departmentPage, null);
     }
+
     public List<Department> listByIds(List<Long> ids) {
-        if (ids==null || ids.isEmpty()){
+        if (ids == null || ids.isEmpty()) {
             return Collections.emptyList();
         }
-        return departmentMapper.selectByIds(ids);
-    }
 
+        Map<Long, Department> hitMap = departmentCacheService.getAll(ids);
+        List<Long> missIds = departmentCacheService.missIds(ids, hitMap);
+
+        if (!missIds.isEmpty()) {
+            List<Department> fromDb = departmentMapper.selectByIds(missIds);
+            departmentCacheService.putAll(fromDb);
+            for (Department department : fromDb) {
+                if (department != null && department.getId() != null) {
+                    hitMap.put(department.getId(), department);
+                }
+            }
+        }
+
+        List<Department> result = new ArrayList<>();
+        for (Long id : ids) {
+            Department department = hitMap.get(id);
+            if (department != null) {
+                result.add(department);
+            }
+        }
+        return result;
+    }
 }

@@ -9,6 +9,12 @@ spring:
     username: ${DEPT_DB_USERNAME:root}
     password: ${DEPT_DB_PASSWORD:123456}
     driver-class-name: com.mysql.cj.jdbc.Driver
+  data:
+    redis:
+      host: ${REDIS_HOST:127.0.0.1}
+      port: ${REDIS_PORT:6379}
+      database: 0
+      timeout: 3000ms
   cloud:
     nacos:
       discovery:
