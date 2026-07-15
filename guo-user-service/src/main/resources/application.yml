@@ -9,6 +9,12 @@ spring:
     username: ${USER_DB_USERNAME:root}
     password: ${USER_DB_PASSWORD:123456}
     driver-class-name: com.mysql.cj.jdbc.Driver
+  rabbitmq:
+    host: ${RABBITMQ_HOST:127.0.0.1}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
+
   cloud:
     nacos:
       discovery:
@@ -16,17 +22,19 @@ spring:
       config:
         server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
         file-extension: yaml
-        openfeign:
-          client:
-            config:
-              default:
-                connectTimeout: 3000
-                readTimeout: 5000
-              dept-service:
-                connectTimeout: 2000
-                readTimeout: 3000
+
+      openfeign:
+         client:
+          config:
+            default:
+              connectTimeout: 3000
+              readTimeout: 5000
+            dept-service:
+              connectTimeout: 2000
+              readTimeout: 3000
+
   config:
-     import: optional:nacos:user-service.yaml
+      import: optional:nacos:user-service.yaml
 
 
 mybatis-plus:

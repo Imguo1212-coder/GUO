@@ -24,17 +24,20 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.test.guo.user.mq.UserEventPublisher;
 
 @Service
 public class UserService {
 
     private final UserMapper userMapper;
     private final DeptClient deptClient;
+    private final UserEventPublisher userEventPublisher;
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
 
-    public UserService(UserMapper userMapper, DeptClient deptClient) {
+    public UserService(UserMapper userMapper, DeptClient deptClient,UserEventPublisher userEventPublisher) {
         this.userMapper = userMapper;
         this.deptClient = deptClient;
+        this.userEventPublisher = userEventPublisher;
     }
 
     public User create(UserCreateRequest request) {
@@ -49,6 +52,7 @@ public class UserService {
         if (rows == 0) {
             throw new BusinessException(ErrorCode.USER_OPERATION_FAILED, "用户新增失败");
         }
+        userEventPublisher.publishUserCreated(user);
         return user;
     }
     public void delete(Long id) {
