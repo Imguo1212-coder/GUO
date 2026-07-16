@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-@FeignClient(name = "dept-service")
+@FeignClient(name = "dept-service",fallback = DeptClientFallback.class)
 public interface DeptClient {
 
     @GetMapping("/departments/{id}")

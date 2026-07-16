@@ -14,7 +14,6 @@ spring:
     port: ${RABBITMQ_PORT:5672}
     username: ${RABBITMQ_USERNAME:guest}
     password: ${RABBITMQ_PASSWORD:guest}
-
   cloud:
     nacos:
       discovery:
@@ -22,20 +21,25 @@ spring:
       config:
         server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
         file-extension: yaml
-
-      openfeign:
-         client:
-          config:
-            default:
-              connectTimeout: 3000
-              readTimeout: 5000
-            dept-service:
-              connectTimeout: 2000
-              readTimeout: 3000
-
+    openfeign:
+      circuitbreaker:
+        enabled: true
+      client:
+        config:
+          default:
+            connectTimeout: 3000
+            readTimeout: 5000
+          dept-service:
+            connectTimeout: 2000
+            readTimeout: 3000
+    sentinel:
+      eager: true
   config:
-      import: optional:nacos:user-service.yaml
+    import: optional:nacos:user-service.yaml
 
+feign:
+  sentinel:
+    enabled: true
 
 mybatis-plus:
   type-aliases-package: com.test.guo.user.entity
