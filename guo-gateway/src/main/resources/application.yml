@@ -4,6 +4,12 @@ server:
 spring:
   application:
     name: guo-gateway
+  data:
+    redis:
+      host: ${REDIS_HOST:127.0.0.1}
+      port: ${REDIS_PORT:6379}
+      database: 0
+      timeout: 3000ms
   cloud:
     nacos:
       discovery:
