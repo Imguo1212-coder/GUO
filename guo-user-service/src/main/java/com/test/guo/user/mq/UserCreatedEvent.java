@@ -9,15 +9,16 @@ public class UserCreatedEvent {
     private Long departmentId;
     private LocalDateTime createTime;
 
-public UserCreatedEvent(){
-}
-public UserCreatedEvent(Long userId, String name, String email, Long departmentId, LocalDateTime createTime) {
-    this.userId = userId;
-    this.name = name;
-    this.email = email;
-    this.departmentId = departmentId;
-    this.createTime = createTime;
-}
+    public UserCreatedEvent() {
+    }
+
+    public UserCreatedEvent(Long userId, String name, String email, Long departmentId, LocalDateTime createTime) {
+        this.userId = userId;
+        this.name = name;
+        this.email = email;
+        this.departmentId = departmentId;
+        this.createTime = createTime;
+    }
 
     public Long getUserId() {
         return userId;

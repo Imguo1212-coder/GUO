@@ -21,6 +21,7 @@ import java.util.regex.Pattern;
 
 @Component
 public class IpRateLimitFilter implements GlobalFilter, Ordered {
+
     private static final Logger log = LoggerFactory.getLogger(IpRateLimitFilter.class);
     private static final Pattern USER_GET_BY_ID=
             Pattern.compile("^/users/\\d+$");
@@ -31,23 +32,29 @@ public class IpRateLimitFilter implements GlobalFilter, Ordered {
     public IpRateLimitFilter(ReactiveStringRedisTemplate redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
-
     @Override
     public Mono<Void>filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+
         ServerHttpRequest request = exchange.getRequest();
         HttpMethod method = request.getMethod();
         String path = request.getURI().getPath();
+
         if (method != HttpMethod.GET || !USER_GET_BY_ID.matcher(path).matches()) {
             return chain.filter(exchange);
         }
+
         String ip = resolveClientIp(request);
         String redisKey = "rate:limit:" + ip + ":GET:" + path;
-        return redisTemplate.opsForValue().increment(redisKey).flatMap(count -> {
+
+        return redisTemplate.opsForValue().increment(redisKey)
+                .flatMap(count -> {
             Mono<Boolean> expireMono = (count != null && count == 1)
                     ? redisTemplate.expire(redisKey, WIDOW)
                     : Mono.just(true);
-            return  expireMono.thenReturn(count == null ? 1L : count);
-        }).flatMap(count ->{
+
+            return  expireMono.thenReturn(count == null ? 1L : count);})
+                .flatMap(count ->{
+
             if (count>LIMIT){
                 log.warn("限流拦截 ip={}，path={},count{}",ip,path,count);
                 return writeTooManyRequests(exchange.getResponse());
@@ -57,9 +64,11 @@ public class IpRateLimitFilter implements GlobalFilter, Ordered {
     }
     private String resolveClientIp(ServerHttpRequest request){
         String xff = request.getHeaders().getFirst("X-Forwarded-For");
+
         if (xff !=null && !xff.isBlank()){
             return xff.split(",")[0].trim();
         }
+
         if (request.getRemoteAddress()!=null
                 &&request.getRemoteAddress().getAddress().getHostAddress()!=null){
             return request.getRemoteAddress().getAddress().getHostAddress();
@@ -69,6 +78,7 @@ public class IpRateLimitFilter implements GlobalFilter, Ordered {
     private Mono<Void>writeTooManyRequests(ServerHttpResponse response){
         response.setStatusCode(HttpStatus.TOO_MANY_REQUESTS);
         response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
+
         byte[]bytes = """
                 {"code":429,"message":"请求过于频繁，请稍后再试","data":null}
                 """.getBytes(StandardCharsets.UTF_8);
