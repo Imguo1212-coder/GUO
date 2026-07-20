@@ -19,14 +19,14 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.regex.Pattern;
 
-@Component
+//@Component
 public class IpRateLimitFilter implements GlobalFilter, Ordered {
 
     private static final Logger log = LoggerFactory.getLogger(IpRateLimitFilter.class);
     private static final Pattern USER_GET_BY_ID=
             Pattern.compile("^/users/\\d+$");
     private static final int LIMIT = 3;
-    private static final Duration WIDOW = Duration.ofSeconds(10);
+    private static final Duration WIDOW = Duration.ofSeconds(1);
     private final ReactiveStringRedisTemplate redisTemplate;
 
     public IpRateLimitFilter(ReactiveStringRedisTemplate redisTemplate) {

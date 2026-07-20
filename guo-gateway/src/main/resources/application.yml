@@ -25,6 +25,14 @@ spring:
               uri: lb://user-service
               predicates:
                 - Path=/users/**
+              filters:
+                - name: RequestRateLimiter
+                  args:
+                    key-resolver: "#{@ipKeyResolver}"
+                    redis-rate-limiter.replenishRate: 3
+                    redis-rate-limiter.burstCapacity: 3
+                    redis-rate-limiter.requestedTokens: 1
+
             - id: dept-service-route
               uri: lb://dept-service
               predicates:
