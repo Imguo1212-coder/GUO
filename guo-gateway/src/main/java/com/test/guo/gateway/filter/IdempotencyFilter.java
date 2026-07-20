@@ -45,7 +45,6 @@ public class IdempotencyFilter implements GlobalFilter, Ordered {
 
         String idemKey = exchange.getRequest().getHeaders().getFirst(HEADER);
         if (idemKey == null || idemKey.isBlank()) {
-
             return chain.filter(exchange);
         }
 

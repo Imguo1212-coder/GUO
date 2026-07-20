@@ -5,14 +5,20 @@ import org.slf4j.LoggerFactory;
 import com.test.guo.user.config.KafkaConfig;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
-
+import org.springframework.stereotype.Service;
+import com.test.guo.user.service.WelcomeService;
 @Component
 public class UserCreatedListener {
-    private static final Logger log = LoggerFactory.getLogger(UserCreatedListener.class);
+    private final WelcomeService  welcomeService;
+    public UserCreatedListener(WelcomeService welcomeService){
+        this.welcomeService = welcomeService;
+    }
 
-    @KafkaListener(topics = KafkaConfig.USER_CREATED_TOPIC)
+    @KafkaListener(
+            topics = KafkaConfig.USER_CREATED_TOPIC,
+            groupId = "user-service"
+    )
     public void onUserCreated(UserCreatedEvent event){
-
-        log.info("收到用户创建消息，开始处理：{}",event);
+        welcomeService.handleUserCreated(event);
     }
 }
