@@ -1,23 +1,39 @@
-package com.test.guo.user.mq;
+package com.test.guo.common.event;
 
 import java.time.LocalDateTime;
 
 public class UserCreatedEvent {
+    private String eventId;
     private Long userId;
-    private String name;
+    private  String name;
     private String email;
     private Long departmentId;
     private LocalDateTime createTime;
+    private LocalDateTime eventTime;
 
-    public UserCreatedEvent() {
+    public UserCreatedEvent(){
+
     }
+    public UserCreatedEvent(
+            String eventId,
+            Long userId,
+            String name,
+            String email,
+            Long departmentId,
+            LocalDateTime createTime,
+            LocalDateTime eventTime){
 
-    public UserCreatedEvent(Long userId, String name, String email, Long departmentId, LocalDateTime createTime) {
+        this.eventId = eventId;
         this.userId = userId;
         this.name = name;
         this.email = email;
         this.departmentId = departmentId;
         this.createTime = createTime;
+        this.eventTime = eventTime;
+    }
+
+    public String getEventId() {
+        return eventId;
     }
 
     public Long getUserId() {
@@ -40,8 +56,16 @@ public class UserCreatedEvent {
         return createTime;
     }
 
+    public LocalDateTime getEventTime() {
+        return eventTime;
+    }
+
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    public void setEventId(String eventId) {
+        this.eventId = eventId;
     }
 
     public void setName(String name) {
@@ -60,14 +84,20 @@ public class UserCreatedEvent {
         this.createTime = createTime;
     }
 
+    public void setEventTime(LocalDateTime eventTime) {
+        this.eventTime = eventTime;
+    }
+
     @Override
     public String toString() {
         return "UserCreatedEvent{" +
-                "userId=" + userId +
+                "eventId='" + eventId + '\'' +
+                ", userId=" + userId +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", departmentId=" + departmentId +
                 ", createTime=" + createTime +
+                ", eventTime=" + eventTime +
                 '}';
     }
 }

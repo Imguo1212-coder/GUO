@@ -1,12 +1,10 @@
 package com.test.guo.user.mq;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import com.test.guo.user.config.KafkaConfig;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import com.test.guo.user.service.WelcomeService;
+import com.test.guo.common.event.UserCreatedEvent;
 @Component
 public class UserCreatedListener {
     private final WelcomeService  welcomeService;
@@ -16,7 +14,7 @@ public class UserCreatedListener {
 
     @KafkaListener(
             topics = KafkaConfig.USER_CREATED_TOPIC,
-            groupId = "user-service"
+            groupId = "welcome-service"
     )
     public void onUserCreated(UserCreatedEvent event){
         welcomeService.handleUserCreated(event);

@@ -22,6 +22,7 @@
         <module>guo-user-service</module>
         <module>guo-dept-service</module>
         <module>guo-gateway</module>
+        <module>guo-points-service</module>
     </modules>
 
     <properties>

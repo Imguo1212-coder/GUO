@@ -6,6 +6,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
+import com.test.guo.common.event.UserCreatedEvent;
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Component
 public class UserEventPublisher {
@@ -17,14 +20,18 @@ public class UserEventPublisher {
     }
 
     public void publishUserCreated(User user) {
+
         UserCreatedEvent event = new UserCreatedEvent(
+                UUID.randomUUID().toString(),
                 user.getId(),
                 user.getName(),
                 user.getEmail(),
                 user.getDepartmentId(),
-                user.getCreateTime()
+                user.getCreateTime(),
+                LocalDateTime.now()
+
         );
-        kafkaTemplate.send(KafkaConfig.USER_CREATED_TOPIC, event);
+        kafkaTemplate.send(KafkaConfig.USER_CREATED_TOPIC, user.getId().toString(),event);
         log.info("已发送用户创建信息：{}", event);
     }
 }

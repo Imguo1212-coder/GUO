@@ -12,19 +12,15 @@ import com.test.guo.user.dto.UserUpdateRequest;
 import com.test.guo.user.entity.User;
 import com.test.guo.user.feign.DeptClient;
 import com.test.guo.user.mapper.UserMapper;
+import com.test.guo.user.mq.UserEventPublisher;
 import com.test.guo.user.vo.UserVO;
-import org.springframework.stereotype.Service;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.test.guo.user.mq.UserEventPublisher;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {

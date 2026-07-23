@@ -1,0 +1,38 @@
+server:
+  port: 8083
+
+spring:
+  application:
+    name: points-service
+
+  datasource:
+    url: ${POINTS_DB_URL:jdbc:mysql://localhost:3306/guo_points?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai}
+    username: ${POINTS_DB_USERNAME:root}
+    password: ${POINTS_DB_PASSWORD:123456}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:127.0.0.1:9092}
+
+    consumer:
+      group-id: points-service
+      auto-offset-reset: earliest
+      enable-auto-commit: false
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JacksonJsonDeserializer
+
+      properties:
+        spring.json.trusted.packages: com.test.guo.common.event
+        spring.json.value.default.type: com.test.guo.common.event.UserCreatedEvent
+
+    listener:
+      ack-mode: record
+
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
