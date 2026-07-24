@@ -1,5 +1,6 @@
 package com.test.guo.user.service;
 
+import com.test.guo.user.mq.UserBehaviorPublisher;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -28,12 +29,14 @@ public class UserService {
     private final UserMapper userMapper;
     private final DeptClient deptClient;
     private final UserEventPublisher userEventPublisher;
+    private final UserBehaviorPublisher userBehaviorPublisher;
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
 
-    public UserService(UserMapper userMapper, DeptClient deptClient,UserEventPublisher userEventPublisher) {
+    public UserService(UserMapper userMapper, DeptClient deptClient,UserEventPublisher userEventPublisher,UserBehaviorPublisher userBehaviorPublisher) {
         this.userMapper = userMapper;
         this.deptClient = deptClient;
         this.userEventPublisher = userEventPublisher;
+        this.userBehaviorPublisher = userBehaviorPublisher;
     }
 
     public User create(UserCreateRequest request) {
@@ -49,8 +52,20 @@ public class UserService {
             throw new BusinessException(ErrorCode.USER_OPERATION_FAILED, "用户新增失败");
         }
         userEventPublisher.publishUserCreated(user);
+
+        userBehaviorPublisher.publish(
+                "USER_CREATED",
+                user.getId(),
+                Map.of(
+                        "name",user.getName(),
+                        "age", user.getAge(),
+                        "email", user.getEmail(),
+                        "departmentId", user.getDepartmentId()
+                )
+        );
         return user;
     }
+
     public void delete(Long id) {
         int rows = userMapper.deleteById(id);
 

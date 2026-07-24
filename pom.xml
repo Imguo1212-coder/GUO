@@ -23,6 +23,7 @@
         <module>guo-dept-service</module>
         <module>guo-gateway</module>
         <module>guo-points-service</module>
+        <module>guo-behavior-service</module>
     </modules>
 
     <properties>

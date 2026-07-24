@@ -19,7 +19,10 @@ spring:
       auto-offset-reset: earliest
       enable-auto-commit: false
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.JacksonJsonDeserializer
+       //Kafka消息的Key是字符串，使用 StringDeserializer将字节转换成Java字符串
+
+      value-deserializer: org.springframework.kafka.support.serializer.JacksonJsonDeserializer 
+       //Kafka保存的是字节数据,将消息中的 JSON 转换成UserCreatedEvent
 
       properties:
         spring.json.trusted.packages: com.test.guo.common.event
@@ -27,6 +30,7 @@ spring:
 
     listener:
       ack-mode: record
+
 
   cloud:
     nacos:
